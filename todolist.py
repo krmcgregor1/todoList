@@ -107,7 +107,13 @@ class ToDoList():
                 self.todoList.add(itemAdded)
             # Delete an item
             elif menuChoice == 2:
-                pass
+                prompt = 'Enter the name of the task you would like to delete:'
+                errorMessage = 'Input cannot be empty'
+                itemDeleted = getStrInput(prompt=prompt, errorMessage=errorMessage)
+                while itemDeleted not in self.todoList:
+                    print('That item is not in the list.. try again.')
+                    itemDeleted = getStrInput(prompt=prompt, errorMessage=errorMessage)
+                self.todoList.remove(itemDeleted)
             # Mark Item as completed
             elif menuChoice == 3:
                 pass
