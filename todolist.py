@@ -6,7 +6,6 @@ Created on Wed Nov 18 17:36:10 2020
 """
 from dataStructures.linkedqueue import LinkedQueue
 from dataStructures.linkedlist import LinkedList
-from os import system, name
 import csv
 
 def getStrInput(prompt, errorMessage):
@@ -32,9 +31,6 @@ class ToDoList():
     def __init__(self):
         self.todoList = LinkedQueue()
         self.completedList = LinkedList()
-        
-        # Clear screen after each entry, set to false when errors occur
-        self.__clearScreen = True
         
         
     def printList(self, printLists=[]):
@@ -99,33 +95,10 @@ class ToDoList():
         
     def menu(self):
         menuChoice = 1 #instantiating to enter the loop
-        displayChoice = None
         while menuChoice != 6:
-            # Clearing the screen will only work through terminal (I think)
-            if self.__clearScreen:
-                # Apparently specifys Windows
-                if name == 'nt':
-                    system('cls')
-                # Vs Linux
-                else:
-                    system('clear')
-            else:
-                self.__clearScreen = True
-                
-            if displayChoice == 1:
-                self.printList([self.todoList])
-                displayChoice = None
-            elif displayChoice == 2:
-                self.printList([self.completedList])
-                displayChoice = None
-            elif displayChoice == 3:
-                self.printList([self.completedList, self.todoList])
-                displayChoice = None
-            
             prompt = 'Would you like to:\n(1) Add an item\n(2) Remove an item\n(3) Complete an item\n(4) Import tasks from a file\n(5) Print the list\n(6) Exit the program\n\nEnter Choice:'
             errorMessage = 'Input must be between 1 and 6 (inclusive)'
             menuChoice = getIntInput(prompt=prompt, errorMessage=errorMessage, lowerLimit=1, upperLimit=6)
-            
             
             # Add Item
             if menuChoice == 1:
@@ -146,6 +119,13 @@ class ToDoList():
                 prompt = 'Would you like to display:\n(1) The uncompleted list\n(2) The completed list\n(3) Both\n\nEnter Choice:'
                 errorMessage = 'Input must be between 1 and 3 (inclusive)'
                 displayChoice = getIntInput(prompt=prompt, errorMessage=errorMessage, lowerLimit=1, upperLimit=3)
+                
+                if displayChoice == 1:
+                    self.printList([self.todoList])
+                elif displayChoice == 2:
+                    self.printList([self.completedList])
+                elif displayChoice == 3:
+                    self.printList([self.completedList, self.todoList])
                 
         print('Exiting...')
         
