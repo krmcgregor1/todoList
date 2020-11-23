@@ -6,7 +6,7 @@ Created on Wed Nov 18 17:36:10 2020
 """
 from dataStructures.linkedqueue import LinkedQueue
 from dataStructures.linkedlist import LinkedList
-from cmdInputOutput import dataTypeConstruct, getInput, printTable
+from cmdInputOutput import dataTypeConstruct, getInput
 from os import system, name
 import csv
 
@@ -17,6 +17,7 @@ class ToDoList():
         
         # Clear screen after each entry, set to false when errors occur
         self.__clearScreen = True
+        
         
     def printList(self, printLists=[]):
         # Create a list representing a table
@@ -33,9 +34,42 @@ class ToDoList():
             
                 index += 1
         
+        
+        #Gets length of the longest string in each column
+        largLenList = [0 for x in range(0, len(tableList[0]))]
+        for row in tableList:
+            for x in range(0, len(row)):
+                if len(str(row[x])) > largLenList[x]:
+                    cellLen = len(str(row[x]))
+                    largLenList[x] = cellLen
+                    
+        #Add two (for padding) to the list
+        largLenList = [x + 2 for x in largLenList]
+        
         # print table middle alligned
-        printTable(tableList, align='m')
+        for row in tableList:
+            rowString = ''
+            for x in range(len(row)):
+                #Get space difference between largest length and current item
+                spacesString = ''.join([' ' for x in range(largLenList[x] - len(str(row[x])))])
+                #Odd spacing, puts the extra space on the right
+                if len(spacesString) % 2:
+                    midPoint = int((len(spacesString) - 1) / 2)
+                    spacesStringLeft = spacesString[:midPoint]
+                    spacesStringRight = spacesString[:midPoint+1]
+                                
+                    rowString += f'{spacesStringLeft}{row[x]}{spacesStringRight}'
+                #Even spacing
+                else:
+                    midPoint = int(len(spacesString) / 2)
+                    spacesString = spacesString[:midPoint]
+                                
+                    rowString += f'{spacesString}{row[x]}{spacesString}'
+                    
+            print(rowString)
+        
         print()
+        
         
     # Read from file, default to 'todoList.csv'
     def readFromFile(self, filename='todoList.csv'):
@@ -102,5 +136,7 @@ class ToDoList():
         
 someList = ToDoList()
 someList.menu()
+
+
         
         
