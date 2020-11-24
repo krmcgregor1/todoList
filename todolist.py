@@ -116,7 +116,14 @@ class ToDoList():
                 self.todoList.remove(itemDeleted)
             # Mark Item as completed
             elif menuChoice == 3:
-                pass
+                prompt = 'Enter the name of the task you would like to mark as completed:'
+                errorMessage = 'Input cannot be empty'
+                itemCompleted = getStrInput(prompt=prompt, errorMessage=errorMessage)
+                while itemCompleted not in self.todoList:
+                    print('That item is not in the list.. try again.')
+                    itemCompleted = getStrInput(prompt=prompt, errorMessage=errorMessage)
+                self.completedList.add(itemCompleted)
+                self.todoList.remove(itemCompleted)
             # Import from file
             elif menuChoice == 4:
                 pass
