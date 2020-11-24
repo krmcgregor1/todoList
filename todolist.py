@@ -103,6 +103,7 @@ class ToDoList():
             # Add Item
             if menuChoice == 1:
                 prompt = 'Enter the task you would like to add:'
+                errorMessage = 'Input cannot be empty'
                 itemAdded = getStrInput(prompt=prompt, errorMessage=errorMessage)
                 self.todoList.add(itemAdded)
             # Delete an item
@@ -117,13 +118,14 @@ class ToDoList():
             # Mark Item as completed
             elif menuChoice == 3:
                 promptChoice = 'Would you like to mark as completed:\n(1) ' + self.todoList.peek() + '\n(2) Another item\n\nEnter Choice:'
-                errorMessage = 'Input cannot be empty'
+                errorMessage = 'Input must be between 1 and 2 (inclusive)'
                 userChoice = getIntInput(prompt=promptChoice, errorMessage=errorMessage, lowerLimit=1, upperLimit=2)
                 if userChoice == 1:
                     itemCompleted = self.todoList.pop()
                     self.completedList.add(itemCompleted)
                 elif userChoice == 2:
                     promptItemChoice = 'Enter the name of the task you would like to mark as completed:'
+                    errorMessage = 'Input cannot be empty'
                     itemCompleted = getStrInput(prompt=promptItemChoice, errorMessage=errorMessage)
                     while itemCompleted not in self.todoList:
                         print('That item is not in the list.. try again.')
