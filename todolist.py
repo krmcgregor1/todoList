@@ -12,7 +12,7 @@ def getStrInput(prompt, errorMessage):
     while True:
         userInput = input(f'{prompt} ').strip()
         if userInput != '':
-            return userInput
+            return userInput.upper()
         else:
             print(errorMessage)
             
@@ -116,14 +116,20 @@ class ToDoList():
                 self.todoList.remove(itemDeleted)
             # Mark Item as completed
             elif menuChoice == 3:
-                prompt = 'Enter the name of the task you would like to mark as completed:'
+                promptChoice = 'Would you like to mark as completed:\n(1) ' + self.todoList.peek() + '\n(2) Another item\n\nEnter Choice:'
                 errorMessage = 'Input cannot be empty'
-                itemCompleted = getStrInput(prompt=prompt, errorMessage=errorMessage)
-                while itemCompleted not in self.todoList:
-                    print('That item is not in the list.. try again.')
-                    itemCompleted = getStrInput(prompt=prompt, errorMessage=errorMessage)
-                self.completedList.add(itemCompleted)
-                self.todoList.remove(itemCompleted)
+                userChoice = getIntInput(prompt=promptChoice, errorMessage=errorMessage, lowerLimit=1, upperLimit=2)
+                if userChoice == 1:
+                    itemCompleted = self.todoList.pop()
+                    self.completedList.add(itemCompleted)
+                elif userChoice == 2:
+                    promptItemChoice = 'Enter the name of the task you would like to mark as completed:'
+                    itemCompleted = getStrInput(prompt=promptItemChoice, errorMessage=errorMessage)
+                    while itemCompleted not in self.todoList:
+                        print('That item is not in the list.. try again.')
+                        itemCompleted = getStrInput(prompt=prompt, errorMessage=errorMessage)
+                    self.completedList.add(itemCompleted)
+                    self.todoList.remove(itemCompleted)
             # Import from file
             elif menuChoice == 4:
                 pass
