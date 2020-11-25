@@ -95,10 +95,10 @@ class ToDoList():
         
     def menu(self):
         menuChoice = 1 #instantiating to enter the loop
-        while menuChoice != 6:
-            prompt = 'Would you like to:\n(1) Add an item\n(2) Remove an item\n(3) Complete an item\n(4) Import tasks from a file\n(5) Print the list\n(6) Exit the program\n\nEnter Choice:'
-            errorMessage = 'Input must be between 1 and 6 (inclusive)'
-            menuChoice = getIntInput(prompt=prompt, errorMessage=errorMessage, lowerLimit=1, upperLimit=6)
+        while menuChoice != 7:
+            prompt = 'Would you like to:\n(1) Add an item\n(2) Remove an item\n(3) Complete an item\n(4) Import tasks from a file\n(5) Print the list\n(6) Print list to a file\n(7) Exit the program\n\nEnter Choice:'
+            errorMessage = 'Input must be between 1 and 7 (inclusive)'
+            menuChoice = getIntInput(prompt=prompt, errorMessage=errorMessage, lowerLimit=1, upperLimit=7)
             
             # Add Item
             if menuChoice == 1:
@@ -147,6 +147,14 @@ class ToDoList():
                     self.printList([self.completedList])
                 elif displayChoice == 3:
                     self.printList([self.completedList, self.todoList])
+            # Print to file
+            elif menuChoice == 6:
+                fileName = input("What is the name of the file you want to write to:")
+                file = open(fileName, "w")
+                for item in self.todoList:
+                    file.write('%s\n' % item)
+                file.close()
+            
                 
         print('Exiting...')
         
