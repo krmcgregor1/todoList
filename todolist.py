@@ -149,10 +149,16 @@ class ToDoList():
                     self.printList([self.completedList, self.todoList])
             # Print to file
             elif menuChoice == 6:
-                fileName = input("What is the name of the file you want to write to:")
-                file = open(fileName, "w")
-                for item in self.todoList:
-                    file.write('%s\n' % item)
+                choice = int(input("Would you like to print\n(1) The uncompleted list\n(2) The completed list\n"))
+                if (choice == 1 or choice == 2):
+                    fileName = input("What is the name of the file you want to write to:")
+                    file = open(fileName, "w")
+                    if (choice == 1):
+                        for item in self.todoList:
+                            file.write('%s\n' % item)
+                    elif (choice == 2):
+                        for item in self.completedList:
+                            file.write('%s\n' % item)
                 file.close()
             
                 
