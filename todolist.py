@@ -167,7 +167,8 @@ class ToDoList():
                     elif (choice == 2):
                         for item in self.completedList:
                             file.write('%s\n' % item)
-                file.close()
+                            
+                    file.close()
             
                 
         print('Exiting...')
