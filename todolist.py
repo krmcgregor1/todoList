@@ -6,7 +6,7 @@ Created on Wed Nov 18 17:36:10 2020
 """
 from dataStructures.linkedqueue import LinkedQueue
 from dataStructures.linkedlist import LinkedList
-import csv
+import os
 
 def getStrInput(prompt, errorMessage):
     while True:
@@ -29,7 +29,7 @@ def getIntInput(prompt, errorMessage, lowerLimit, upperLimit):
 
 class ToDoList():
     def __init__(self):
-        self.todoList = LinkedQueue()
+        self.uncompletedList = LinkedQueue()
         self.completedList = LinkedList()
         
         
@@ -83,109 +83,147 @@ class ToDoList():
             print(rowString)
         
         print()
+
+
+def menu(todoList):
+    menuChoice = 1 #instantiating to enter the loop
+    while menuChoice != 7:
+        # Get user menu choice
+        prompt = 'Would you like to:\n(1) Add an item\n(2) Remove an item\n(3) Complete an item\n(4) Import tasks from a file\n(5) Print the list\n(6) Save list to a file\n(7) Exit the program\n\nEnter Choice:'
+        errorMessage = 'Input must be between 1 and 7 (inclusive)'
+        menuChoice = getIntInput(prompt=prompt, errorMessage=errorMessage, lowerLimit=1, upperLimit=7)
         
-        
-    # Read from file, default to 'todoList.csv'
-    def readFromFile(self, filename='todoList.csv'):
-        pass
-    
-    # save to default filename 'todoList.csv'
-    def saveToFile(self):
-        pass
-        
-    def menu(self):
-        menuChoice = 1 #instantiating to enter the loop
-        while menuChoice != 7:
-            prompt = 'Would you like to:\n(1) Add an item\n(2) Remove an item\n(3) Complete an item\n(4) Import tasks from a file\n(5) Print the list\n(6) Print list to a file\n(7) Exit the program\n\nEnter Choice:'
-            errorMessage = 'Input must be between 1 and 7 (inclusive)'
-            menuChoice = getIntInput(prompt=prompt, errorMessage=errorMessage, lowerLimit=1, upperLimit=7)
+        # Add Item
+        if menuChoice == 1:
+            # Get the task to add
+            prompt = 'Enter the task you would like to add:'
+            errorMessage = 'Input cannot be empty'
+            itemAdded = getStrInput(prompt=prompt, errorMessage=errorMessage)
             
-            # Add Item
-            if menuChoice == 1:
-                prompt = 'Enter the task you would like to add:'
+            # Add the task
+            todoList.uncompletedList.add(itemAdded)
+            
+        # Delete an item
+        elif menuChoice == 2:
+            # Unavailable if list is empty
+            if todoList.uncompletedList.isEmpty():
+                print('The list is empty!')
+            else:
+                # Get the task to delete
+                prompt = 'Enter the name of the task you would like to delete:'
                 errorMessage = 'Input cannot be empty'
-                itemAdded = getStrInput(prompt=prompt, errorMessage=errorMessage)
-                self.todoList.add(itemAdded)
-            # Delete an item
-            elif menuChoice == 2:
-                if self.todoList.isEmpty():
-                    print('The list is empty!')
-                else:
-                    prompt = 'Enter the name of the task you would like to delete:'
-                    errorMessage = 'Input cannot be empty'
+                itemDeleted = getStrInput(prompt=prompt, errorMessage=errorMessage)
+                
+                # Check if the task is in the list and reprompt if necessary
+                while itemDeleted not in todoList.uncompletedList:
+                    print('That item is not in the list.. try again.')
                     itemDeleted = getStrInput(prompt=prompt, errorMessage=errorMessage)
-                    while itemDeleted not in self.todoList:
-                        print('That item is not in the list.. try again.')
-                        itemDeleted = getStrInput(prompt=prompt, errorMessage=errorMessage)
-                    self.todoList.remove(itemDeleted)
-            # Mark Item as completed
-            elif menuChoice == 3:
-                if self.todoList.isEmpty():
-                    print('The list is empty!')
-                elif self.todoList.size == 1:
-                    print(self.todoList.pop() + ' is now completed')
-                else:
-                    promptChoice = 'Would you like to mark as completed:\n(1) ' + self.todoList.peek() + '\n(2) Another item\n\nEnter Choice:'
-                    errorMessage = 'Input must be between 1 and 2 (inclusive)'
-                    userChoice = getIntInput(prompt=promptChoice, errorMessage=errorMessage, lowerLimit=1, upperLimit=2)
-                    if userChoice == 1:
-                        itemCompleted = self.todoList.pop()
-                        self.completedList.add(itemCompleted)
-                    elif userChoice == 2:
-                        promptItemChoice = 'Enter the name of the task you would like to mark as completed:'
-                        errorMessage = 'Input cannot be empty'
-                        itemCompleted = getStrInput(prompt=promptItemChoice, errorMessage=errorMessage)
-                        while itemCompleted not in self.todoList:
-                            print('That item is not in the list.. try again.')
-                            itemCompleted = getStrInput(prompt=promptItemChoice, errorMessage=errorMessage)
-                        self.completedList.add(itemCompleted)
-                        self.todoList.remove(itemCompleted)
-            # Import from file
-            elif menuChoice == 4:
-                pass
-            # Print List
-            elif menuChoice == 5:
-                prompt = 'Would you like to display:\n(1) The uncompleted list\n(2) The completed list\n(3) Both\n\nEnter Choice:'
-                errorMessage = 'Input must be between 1 and 3 (inclusive)'
-                displayChoice = getIntInput(prompt=prompt, errorMessage=errorMessage, lowerLimit=1, upperLimit=3)
+                    
+                # Remove task
+                todoList.uncompletedList.remove(itemDeleted)
                 
-                if displayChoice == 1:
-                    self.printList([self.todoList])
-                elif displayChoice == 2:
-                    self.printList([self.completedList])
-                elif displayChoice == 3:
-                    self.printList([self.completedList, self.todoList])
-            # Print to file
-            elif menuChoice == 6:
-                while True:
-                    choice = input("Would you like to print\n(1) The uncompleted list\n(2) The completed list\n")
-                    try:
-                        choice = int(choice)
-                        break;
-                    except ValueError:
-                        print("Please enter 1 or 2")
-                        
-                        
-                if (choice == 1 or choice == 2):
-                    goodName = 0
-                    while goodName == 0:
-                        fileName = input("What is the name of the file you want to write to:")
-                        if len(fileName) > 0:
-                            goodName = 1
-                    file = open(fileName, "w")
-                    if (choice == 1):
-                        for item in self.todoList:
-                            file.write('%s\n' % item)
-                    elif (choice == 2):
-                        for item in self.completedList:
-                            file.write('%s\n' % item)
-                    file.close()
+        # Mark Item as completed
+        elif menuChoice == 3:
+            # Unavailable if list is empty
+            if todoList.uncompletedList.isEmpty():
+                print('The list is empty!')
             
+            # Use queue method if list is only 1 in size
+            elif todoList.uncompletedList.size == 1:
+                itemCompleted = todoList.uncompletedList.pop()
+                todoList.completedList.add(itemCompleted)
+                print(itemCompleted + ' is now completed')
                 
-        print('Exiting...')
+            else:
+                # Choose task completion method
+                promptChoice = 'Would you like to mark as completed:\n(1) ' + todoList.uncompletedList.peek() + '\n(2) Another item\n\nEnter Choice:'
+                errorMessage = 'Input must be between 1 and 2 (inclusive)'
+                userChoice = getIntInput(prompt=promptChoice, errorMessage=errorMessage, lowerLimit=1, upperLimit=2)
+                
+                if userChoice == 1:
+                    itemCompleted = todoList.uncompletedList.pop()
+                    todoList.completedList.add(itemCompleted)
+                    print(itemCompleted + ' is now completed')
+                    
+                elif userChoice == 2:
+                    promptItemChoice = 'Enter the name of the task you would like to mark as completed:'
+                    errorMessage = 'Input cannot be empty'
+                    itemCompleted = getStrInput(prompt=promptItemChoice, errorMessage=errorMessage)
+                    
+                    while itemCompleted not in todoList.uncompletedList:
+                        print('That item is not in the list.. try again.')
+                        itemCompleted = getStrInput(prompt=promptItemChoice, errorMessage=errorMessage)
+                        
+                    todoList.completedList.add(itemCompleted)
+                    todoList.uncompletedList.remove(itemCompleted)
+                    print(itemCompleted + ' is now completed')
+                    
+        # Import from file
+        elif menuChoice == 4:
+            pass
         
-someList = ToDoList()
-someList.menu()
+        # Print List
+        elif menuChoice == 5:
+            prompt = 'Would you like to display:\n(1) The uncompleted list\n(2) The completed list\n(3) Both\n\nEnter Choice:'
+            errorMessage = 'Input must be between 1 and 3 (inclusive)'
+            displayChoice = getIntInput(prompt=prompt, errorMessage=errorMessage, lowerLimit=1, upperLimit=3)
+            
+            if displayChoice == 1:
+                todoList.printList([todoList.uncompletedList])
+                
+            elif displayChoice == 2:
+                todoList.printList([todoList.completedList])
+                
+            elif displayChoice == 3:
+                todoList.printList([todoList.completedList, todoList.uncompletedList])
+                
+        # Print to file
+        elif menuChoice == 6:
+            # Choose list to save and validate input
+            while True:
+                choice = input("Would you like to save\n(1) The uncompleted list\n(2) The completed list\n\nEnterChoice: ").strip()
+                
+                try:
+                    choice = int(choice)
+                    if choice == 1 or choice == 2:
+                        break
+                    else:
+                        print("Please enter 1 or 2")
+                except ValueError:
+                    print("Please enter 1 or 2")
+                    
+            # Get and validate filename input
+            goodName = 0
+            while goodName == 0:
+                fileName = input("What is the name of the file you want to write to: ").strip()
+                if len(fileName) > 0:
+                    goodName = 1
+            
+            # Write to file        
+            file = open(fileName, "w")
+            if (choice == 1):
+                for item in todoList.uncompletedList:
+                    file.write('%s\n' % item)
+                    
+            elif (choice == 2):
+                for item in todoList.completedList:
+                    file.write('%s\n' % item)
+                    
+            file.close()
+        
+            
+    print('Exiting...')
+
+
+
+
+
+def main():
+    someList = ToDoList()
+    menu(someList)
+
+if __name__ == '__main__':
+    main()
 
 
         
